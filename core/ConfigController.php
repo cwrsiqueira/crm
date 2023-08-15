@@ -39,8 +39,6 @@ class ConfigController extends Config
         } else {
             $this->urlController = $this->slugController(CONTROLLER);
         }
-
-        echo "Controller: {$this->urlController}<br>";
     }
 
     /**

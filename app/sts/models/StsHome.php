@@ -2,6 +2,7 @@
 
 namespace Sts\Models;
 
+use PDO;
 use Sts\Models\helpers\StsConn;
 
 /**
@@ -22,14 +23,13 @@ class StsHome
      */
     public function index(): array
     {
-        $this->data = [
-            "title" => "Topo da Página",
-            "description" => "Descrição do Serviço"
-        ];
-
         $connection = new StsConn();
         $this->connection = $connection->connectDb();
-        var_dump($this->connection);
+
+        $sql = $this->connection->query("SELECT id, title_top, description_top, link_btn_top, txt_btn_top, image FROM sts_homes_tops LIMIT 1");
+        if ($sql->rowCount() > 0) {
+            $this->data = $sql->fetch(PDO::FETCH_ASSOC);
+        }
 
         return $this->data;
     }
