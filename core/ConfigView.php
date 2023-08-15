@@ -3,20 +3,25 @@
 namespace Core;
 
 /**
- * Carrega as páginas da view
+ * Carregar as páginas da View
  */
 class ConfigView
 {
     /**
-     * Recebe o endereço da view e os dados
-     *
-     * @param string $nameView
-     * @param string|array|null $data
+     * Receber o endereço da VIEW e os dados.
+     * @param string $nameView Endereço da VIEW que deve ser carregada
+     * @param array|string|null $data Dados que a VIEW deve receber.
      */
-    public function __construct(private string $nameView, private string|array|null $data)
+    public function __construct(private string $nameView, private array|string|null $data)
     {
     }
 
+    /**
+     * Carregar a VIEW.
+     * Verificar se o arquivo existe, e carregar caso exista, não existindo para o carregamento
+     *
+     * @return void
+     */
     public function loadView(): void
     {
         if (file_exists('app/' . $this->nameView . '.php')) {

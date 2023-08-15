@@ -3,33 +3,34 @@
 namespace Core;
 
 /**
- * Recebe e manipula a URL recebida do arquivo .htaccess
- * e chama o controller
+ * Recebe a URL e manipula
+ * Carregar a CONTROLLER
  */
 class ConfigController extends Config
 {
-    /** @var string $url recebe a URL do arquivo .htaccess */
+    /** @var string $url Recebe a URL do .htaccess */
     private string $url;
-    /** @var array $urlArray recebe um array com as partes da URL */
+    /** @var array $urlArray Recebe a URL convertida para array */
     private array $urlArray;
-    /** @var string $urlController recebe o nome do controller formatado */
     private string $urlController;
-    /** @var string $urlParameter recebe os parâmetros da URL */
-    private string $urlParameter;
-    /** @var string $urlSlugController auxilia na formatação da URL */
+    /*private string $urlParameter;*/
     private string $urlSlugController;
-    /** @var array $format recebe um array com os caracteres para formatação da URL */
     private array $format;
 
     /**
-     * Formata o nome do Controller
+     * Recebe a URL do .htaccess
+     * Validar a URL
      */
     public function __construct()
     {
         $this->config();
-        if (!empty($this->url = filter_input(INPUT_GET, 'url', FILTER_SANITIZE_URL) ?? '')) {
+        if (!empty(filter_input(INPUT_GET, 'url', FILTER_DEFAULT))) {
+            $this->url = filter_input(INPUT_GET, 'url', FILTER_DEFAULT);
+
             $this->clearUrl();
+
             $this->urlArray = explode("/", $this->url);
+
             if (isset($this->urlArray[0])) {
                 $this->urlController = $this->slugController($this->urlArray[0]);
             } else {
@@ -38,10 +39,13 @@ class ConfigController extends Config
         } else {
             $this->urlController = $this->slugController(CONTROLLER);
         }
+
+        echo "Controller: {$this->urlController}<br>";
     }
 
     /**
-     * Limpa a URL com os caracteres permitidos
+     * Método privado não pode ser instanciado fora da classe
+     * Limpara a URL, elimando as TAG, os espaços em brancos, retirar a barra no final da URL e retirar os caracteres especiais
      *
      * @return void
      */
@@ -53,19 +57,20 @@ class ConfigController extends Config
         $this->url = trim($this->url);
         //Eliminar a barra no final da URL
         $this->url = rtrim($this->url, "/");
-        //Eliminar caracteres
+        //Eliminar caracteres 
         $this->format['a'] = 'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜüÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûýýþÿRr"!@#$%&*()_-+={[}]?;:.,\\\'<>°ºª ';
         $this->format['b'] = 'aaaaaaaceeeeiiiidnoooooouuuuuybsaaaaaaaceeeeiiiidnoooooouuuyybyRr-------------------------------------------------------------------------------------------------';
         $this->url = strtr(iconv("UTF-8", "ISO-8859-1", $this->url), iconv("UTF-8", "ISO-8859-1", $this->format['a']), $this->format['b']);
     }
 
     /**
-     * Formata o nome da controller no formato permitido
+     * Converter o valor obtido da URL "sobre-empresa" e converter no formato da classe "SobreEmpresa".
+     * Utilizado as funções para converter tudo para minúsculo, converter o traço pelo espaço, converter cada letra da primeira palavra para maiúsculo, retirar os espaços em branco
      *
-     * @param string $slugController
-     * @return string
+     * @param string $slugController Nome da classe
+     * @return string Retorna a controller "sobre-empresa" convertido para o nome da Classe "SobreEmpresa"
      */
-    private function slugController(string $slugController): string
+    private function slugController($slugController): string
     {
         //Converter para minusculo
         $this->urlSlugController = strtolower($slugController);
@@ -79,14 +84,16 @@ class ConfigController extends Config
     }
 
     /**
-     * Instancia a classe do controller
+     * Carregar as Controllers.
+     * Instanciar as classes da controller e carregar o método index.
      *
      * @return void
      */
     public function loadPage(): void
     {
         $classLoad = "\\Sts\\Controllers\\" . $this->urlController;
-        $classPage = new $classLoad();
+        $loadErro = "\\Sts\\Controllers\\Erro";
+        $classPage = new $classLoad() ?? new $loadErro();
         $classPage->index();
     }
 }
