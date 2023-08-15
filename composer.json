@@ -1,0 +1,17 @@
+{
+    "description": "CWCRM",
+    "authors": [
+        {
+            "name": "Carlos Wagner",
+            "email": "carlosdev@carloswagner.com.br"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Core\\": "core",
+            "App\\": "app",
+            "Sts\\": "app/sts"
+        }
+    },
+    "require": {}
+}
