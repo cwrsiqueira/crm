@@ -24,6 +24,12 @@ abstract class Config
         define('CONTROLLER', 'Home');
         define('CONTROLLERERRO', 'Erro');
 
+        define('HOST', 'localhost');
+        define('USER', 'root');
+        define('PASS', '');
+        define('DBNAME', 'crm');
+        define('PORT', 3306);
+
         define('EMAILADM', 'cwrsiqueira@msn.com');
     }
 }

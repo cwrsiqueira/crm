@@ -92,8 +92,7 @@ class ConfigController extends Config
     public function loadPage(): void
     {
         $classLoad = "\\Sts\\Controllers\\" . $this->urlController;
-        $loadErro = "\\Sts\\Controllers\\Erro";
-        $classPage = new $classLoad() ?? new $loadErro();
+        $classPage = new $classLoad();
         $classPage->index();
     }
 }
